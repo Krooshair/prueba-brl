@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const client_controller_1 = __importDefault(require("./client.controller"));
+const client_schema_1 = require("./client.schema");
+const validateSchema_1 = __importDefault(require("../../shared/middlewares/validateSchema"));
+const getSecretKey_1 = require("../../shared/security/getSecretKey");
+const validateToken_1 = __importDefault(require("../../shared/middlewares/validateToken"));
+const ClientRoute = (0, express_1.Router)();
+const client = new client_controller_1.default();
+ClientRoute.get('/client', (req, res) => client.listClient(req, res));
+ClientRoute.get('/client/query', (0, validateToken_1.default)(getSecretKey_1.getSecretKey), (0, validateSchema_1.default)(client_schema_1.queryDocumentNumber), (req, res) => client.queryDocumentNumber(req, res));
+ClientRoute.get('/client/:id', (req, res) => client.searchClientById(req, res));
+ClientRoute.get('/client/search/:documentNumber', (req, res) => client.searchClientByDocumentNumber(req, res));
+ClientRoute.post('/client', (0, validateToken_1.default)(getSecretKey_1.getSecretKey), (0, validateSchema_1.default)(client_schema_1.createClient), (req, res) => client.createClient(req, res));
+ClientRoute.put('/client/:id', (0, validateToken_1.default)(getSecretKey_1.getSecretKey), (0, validateSchema_1.default)(client_schema_1.updateClient), (req, res) => client.updateClient(req, res));
+ClientRoute.delete('/client/:id', (0, validateToken_1.default)(getSecretKey_1.getSecretKey), (req, res) => client.trashClient(req, res));
+exports.default = ClientRoute;

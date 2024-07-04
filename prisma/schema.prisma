@@ -1,0 +1,213 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// MODELOS PARA USUARIOS
+model Admin {
+  id             Int          @id @default(autoincrement())
+  fullName       String       @db.VarChar(255)
+  documentType   DocumentType
+  documentNumber String       @db.VarChar(255)
+  email          String       @db.VarChar(255)
+  phone          String       @db.VarChar(255)
+  username       String       @db.VarChar(255) @unique
+  password       String       @db.VarChar(255)
+  isVerify       Boolean      @default(false)
+  statusUser     StatusUser   @default(Activo)  
+  status         Status       @default(Habilitado)
+  roleAdmin      RoleAdmin    
+  secretKey      String       @db.VarChar(255) @unique
+  createdAt      DateTime     @db.DateTime() @default(now())
+  updatedAt      DateTime     @db.DateTime() @updatedAt
+  sale           Sale[]
+}
+
+model Client {
+  id             Int          @id @default(autoincrement())
+  fullName       String       @db.VarChar(255)
+  documentType   DocumentType
+  documentNumber String       @db.VarChar(255)
+  email          String       @db.VarChar(255)
+  phone          String       @db.VarChar(255)
+  status         Status       @default(Habilitado)
+  createdAt      DateTime     @db.DateTime() @default(now())
+  updatedAt      DateTime     @db.DateTime() @updatedAt
+  sale           Sale[]
+}
+
+//MODELOS PARA PRODUCTOS
+model Category {
+  id            Int           @id @default(autoincrement())
+  name          String        @db.VarChar(255)
+  slug          String        @db.VarChar(255)
+  subcategories Subcategory[] 
+  status        Status        @default(Habilitado)
+  createdAt     DateTime      @db.DateTime() @default(now())
+  updatedAt     DateTime      @db.DateTime() @updatedAt
+}
+
+model Subcategory {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(255)
+  slug       String    @db.VarChar(255)
+  status     Status    @default(Habilitado)
+  categoryId Int       @db.Int
+  category   Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  products   Product[]
+}
+
+model Product {
+  id             Int         @id @default(autoincrement())
+  name           String      @db.VarChar(255)
+  slug           String      @db.VarChar(255)
+  thumbnail      String      @db.VarChar(255)
+  status         Status      @default(Habilitado)
+  subcategoryId  Int         @db.Int
+  subcategory    Subcategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
+  createdAt      DateTime    @db.DateTime() @default(now())
+  updatedAt      DateTime    @db.DateTime() @updatedAt
+  business       Business[]
+  image          Image[]
+}
+
+model Business {
+  id             Int            @id @default(autoincrement())
+  position       Int            @db.Int
+  codeBusiness   String         @db.VarChar(255) @unique
+  investment     Decimal        @db.Decimal(10,2)
+  price          Decimal        @db.Decimal(10,2)
+  priceOffer     Decimal?       @db.Decimal(10,2)
+  initialStock   Int            @db.Int
+  stock          Int            @db.Int
+  quantityDrawer Int            @db.Int
+  barCode        String         @db.VarChar(255)
+  bill           String?        @db.VarChar(255)
+  statusBusiness StatusBusiness @default(Activo)
+  status         Status         @default(Habilitado)
+  productId      Int            @db.Int
+  product        Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  supplierId     Int            @db.Int
+  supplier       Supplier       @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  createdAt      DateTime       @db.DateTime() @default(now())
+  updatedAt      DateTime       @db.DateTime() @updatedAt
+  saleBusiness   SaleBusiness[]
+}
+
+model Image {
+  id        Int     @id @default(autoincrement())
+  url       String  @db.VarChar(255)
+  productId Int     @db.Int
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model Supplier {
+  id             Int          @id @default(autoincrement())
+  fullName       String       @db.VarChar(255)
+  documentType   DocumentType 
+  documentNumber String       @db.VarChar(255)
+  email          String?      @db.VarChar(255)
+  phone          String?      @db.VarChar(255)
+  status         Status       @default(Habilitado)
+  createdAt      DateTime     @db.DateTime() @default(now())
+  updatedAt      DateTime     @db.DateTime() @updatedAt
+  business       Business[]
+}
+
+//MODELO PARA VENTAS
+model Sale {
+  id           Int            @id @default(autoincrement())
+  codeSale     String         @db.VarChar(255) @unique
+  deliveryType DeliveryType  
+  agency       String?        @db.VarChar(255)
+  region       String?        @db.VarChar(255)
+  province     String?        @db.VarChar(255)
+  district     String?        @db.VarChar(255)
+  direction    String?        @db.VarChar(255)
+  reference    String?        @db.VarChar(255)
+  bills        String         @db.VarChar(255)
+  guide        String?        @db.VarChar(255)
+  totalAmount  Decimal        @db.Decimal(10,2)
+  statusSale   StatusSale     @default(Pagado)
+  status       Status         @default(Habilitado)
+  adminId      Int            @db.Int
+  admin        Admin          @relation(fields: [adminId], references: [id])
+  clientId     Int            @db.Int
+  client       Client         @relation(fields: [clientId], references: [id])
+  createdAt    DateTime       @db.DateTime() @default(now())
+  updatedAt    DateTime       @db.DateTime() @updatedAt
+  saleBusiness SaleBusiness[] 
+  // report       Report[]
+}
+
+model SaleBusiness {
+  id         Int      @id @default(autoincrement())
+  quantity   Int      @db.Int
+  saleId     Int      @db.Int
+  sale       Sale     @relation(fields: [saleId], references: [id])
+  businessId Int      @db.Int
+  business   Business @relation(fields: [businessId], references: [id])
+  status     Status   @default(Habilitado)
+  createdAt  DateTime @db.DateTime() @default(now())
+  updatedAt  DateTime @db.DateTime() @updatedAt
+}
+
+//REPORTES
+// model Report {
+//   id         Int      @id @default(autoincrement())
+//   date       DateTime @db.DateTime() @default(now())
+//   saleId     Int      @db.Int
+//   sale       Sale     @relation(fields: [saleId], references: [id])
+// }
+
+//ENUMS
+enum RoleAdmin {
+  Gerente
+  Administrador
+  Empleado
+}
+
+enum Status {
+  Habilitado
+  Deshabilitado
+}
+
+enum StatusUser {
+  Activo
+  Suspendido
+  Vacaciones
+}
+
+enum DeliveryType {
+  RECOJO
+  ENVIO
+}
+
+enum StatusSale {
+  Pagado
+  Enviando
+  Culminado
+  Cancelado
+}
+
+enum DocumentType {
+  DNI
+  RUC
+  Carnet_Extranjeria
+}
+
+enum StatusBusiness {
+  Activo
+  En_cola
+  Culminado
+}

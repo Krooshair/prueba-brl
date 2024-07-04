@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const category_controller_1 = __importDefault(require("./category.controller"));
+const category_schema_1 = require("./category.schema");
+const validateSchema_1 = __importDefault(require("../../shared/middlewares/validateSchema"));
+const getSecretKey_1 = require("../../shared/security/getSecretKey");
+const validateToken_1 = __importDefault(require("../../shared/middlewares/validateToken"));
+const CategoryRoute = (0, express_1.Router)();
+const category = new category_controller_1.default();
+CategoryRoute.get('/category', (req, res) => category.listCategory(req, res));
+CategoryRoute.get('/category/id/:id', (req, res) => category.searchCategoryById(req, res));
+CategoryRoute.get('/category/:slug', (req, res) => category.searchCategoryBySlug(req, res));
+CategoryRoute.post('/category', (0, validateToken_1.default)(getSecretKey_1.getSecretKey), (0, validateSchema_1.default)(category_schema_1.createCategory), (req, res) => category.createCategory(req, res));
+CategoryRoute.put('/category/:id', (0, validateToken_1.default)(getSecretKey_1.getSecretKey), (0, validateSchema_1.default)(category_schema_1.updateCategory), (req, res) => category.updateCategory(req, res));
+CategoryRoute.delete('/category/:id', (0, validateToken_1.default)(getSecretKey_1.getSecretKey), (req, res) => category.trashCategory(req, res));
+exports.default = CategoryRoute;
