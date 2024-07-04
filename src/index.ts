@@ -22,5 +22,5 @@ app.use('/api/v1', v1Routes)
 
 //SERVER LISTEN
 app.listen(port, () => {
-  console.log(`Server in running http://${host}:${port}`)
+  console.log(`Server in running ${host}:${port}`)
 })
