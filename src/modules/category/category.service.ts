@@ -83,6 +83,7 @@ class CategoryService {
       data: {
         name: category.name,
         slug,
+        createdAt: new Date()
       },
       select: {
         id: true,

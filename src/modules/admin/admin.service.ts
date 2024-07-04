@@ -156,6 +156,7 @@ class AdminService {
         password: admin.password,
         roleAdmin: admin.roleAdmin,
         secretKey,
+        createdAt: new Date()
       },
       select: {
         id: true,

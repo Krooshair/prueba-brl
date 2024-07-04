@@ -161,6 +161,7 @@ class BusinessService {
                 statusBusiness,
                 productId: business.productId || 0,
                 supplierId: business.supplierId || 0,
+                createdAt: new Date()
             },
             select: {
                 id: true,

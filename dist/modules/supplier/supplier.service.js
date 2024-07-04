@@ -97,7 +97,8 @@ class SupplierService {
                 documentType: supplier.documentType,
                 documentNumber: supplier.documentNumber,
                 email: supplier.email,
-                phone: supplier.phone
+                phone: supplier.phone,
+                createdAt: new Date()
             },
             select: {
                 id: true,

@@ -194,8 +194,10 @@ class SaleService {
                             sale.business.map((business) => ({
                                 businessId: business.businessId,
                                 quantity: business.quantity,
+                                createdAt: new Date()
                             })),
                     },
+                    createdAt: new Date()
                 },
                 select: {
                     id: true,

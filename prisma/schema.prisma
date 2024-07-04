@@ -28,7 +28,7 @@ model Admin {
   status         Status       @default(Habilitado)
   roleAdmin      RoleAdmin    
   secretKey      String       @db.VarChar(255) @unique
-  createdAt      DateTime     @db.DateTime() @default(now())
+  createdAt      DateTime     @db.DateTime()
   updatedAt      DateTime     @db.DateTime() @updatedAt
   sale           Sale[]
 }
@@ -41,7 +41,7 @@ model Client {
   email          String       @db.VarChar(255)
   phone          String       @db.VarChar(255)
   status         Status       @default(Habilitado)
-  createdAt      DateTime     @db.DateTime() @default(now())
+  createdAt      DateTime     @db.DateTime()
   updatedAt      DateTime     @db.DateTime() @updatedAt
   sale           Sale[]
 }
@@ -53,7 +53,7 @@ model Category {
   slug          String        @db.VarChar(255)
   subcategories Subcategory[] 
   status        Status        @default(Habilitado)
-  createdAt     DateTime      @db.DateTime() @default(now())
+  createdAt     DateTime      @db.DateTime()
   updatedAt     DateTime      @db.DateTime() @updatedAt
 }
 
@@ -75,7 +75,7 @@ model Product {
   status         Status      @default(Habilitado)
   subcategoryId  Int         @db.Int
   subcategory    Subcategory @relation(fields: [subcategoryId], references: [id], onDelete: Cascade)
-  createdAt      DateTime    @db.DateTime() @default(now())
+  createdAt      DateTime    @db.DateTime() 
   updatedAt      DateTime    @db.DateTime() @updatedAt
   business       Business[]
   image          Image[]
@@ -99,7 +99,7 @@ model Business {
   product        Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
   supplierId     Int            @db.Int
   supplier       Supplier       @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  createdAt      DateTime       @db.DateTime() @default(now())
+  createdAt      DateTime       @db.DateTime() 
   updatedAt      DateTime       @db.DateTime() @updatedAt
   saleBusiness   SaleBusiness[]
 }
@@ -119,7 +119,7 @@ model Supplier {
   email          String?      @db.VarChar(255)
   phone          String?      @db.VarChar(255)
   status         Status       @default(Habilitado)
-  createdAt      DateTime     @db.DateTime() @default(now())
+  createdAt      DateTime     @db.DateTime() 
   updatedAt      DateTime     @db.DateTime() @updatedAt
   business       Business[]
 }
@@ -144,7 +144,7 @@ model Sale {
   admin        Admin          @relation(fields: [adminId], references: [id])
   clientId     Int            @db.Int
   client       Client         @relation(fields: [clientId], references: [id])
-  createdAt    DateTime       @db.DateTime() @default(now())
+  createdAt    DateTime       @db.DateTime() 
   updatedAt    DateTime       @db.DateTime() @updatedAt
   saleBusiness SaleBusiness[] 
   // report       Report[]
@@ -158,17 +158,9 @@ model SaleBusiness {
   businessId Int      @db.Int
   business   Business @relation(fields: [businessId], references: [id])
   status     Status   @default(Habilitado)
-  createdAt  DateTime @db.DateTime() @default(now())
+  createdAt  DateTime @db.DateTime() 
   updatedAt  DateTime @db.DateTime() @updatedAt
 }
-
-//REPORTES
-// model Report {
-//   id         Int      @id @default(autoincrement())
-//   date       DateTime @db.DateTime() @default(now())
-//   saleId     Int      @db.Int
-//   sale       Sale     @relation(fields: [saleId], references: [id])
-// }
 
 //ENUMS
 enum RoleAdmin {

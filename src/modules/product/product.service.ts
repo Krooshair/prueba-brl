@@ -173,6 +173,7 @@ class ProductService {
         slug,
         thumbnail: product.thumbnail || '',
         subcategoryId: product.subcategoryId || 0,
+        createdAt: new Date()
       },
       select: {
         id: true,

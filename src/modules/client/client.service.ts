@@ -72,7 +72,8 @@ class ClientService {
         documentType: client.documentType,
         documentNumber: client.documentNumber,
         email: client.email,
-        phone: client.phone
+        phone: client.phone,
+        createdAt: new Date()
       },
       select: {
         id: true,
